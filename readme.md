@@ -8,12 +8,18 @@ The class should implement most of the core functionality described in the [User
 
 ### Installation
 1. ```cordova plugin add https://github.com/evothings/cordova-ble.git```
+* Build SensorTag.js
 * Add ble.js and SensorTag.js to the ```<head>``` section of your index.html file
 ```<script type="text/javascript" src="ble.js">``` 
 ```<script type="text/javascript" src="path/to/SensorTag.js">```
 
-To build documentation, run this command:
+### Build
 ```
 npm install
+grunt
+```
+
+To build documentation, run this command:
+```
 grunt jsdoc
 ```
