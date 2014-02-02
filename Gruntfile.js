@@ -5,8 +5,8 @@ module.exports = function(grunt) {
     concat: {
         options: {
             separator: '\n',
-            banner: //'/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-                //'<%= grunt.template.today("yyyy-mm-dd") %> */' +
+            banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+                '<%= grunt.template.today("yyyy-mm-dd") %> */' +
                 "\n(function (window, undefined) {\n" +
                 "\t'use strict';\n",
             footer: "\n\t// Export the SensorTag class\n" + 
@@ -32,19 +32,19 @@ module.exports = function(grunt) {
             dest: 'SensorTag.js'
         }
     },
-    jshint: {
-		files: [
-            '<%= concat.dist.src %>',
-            'Gruntfile.js', 
-            'SensorTag.js'
-        ]
-    },
     uglify: {
         my_target: {
             files: {
-                'SensorTag.min.js': ['SensorTag.js']
+                'SensorTag.min.js': '<%= concat.dist.dest %>'
             }
         }
+    },
+    jshint: {
+		files: [
+            'Gruntfile.js', 
+            '<%= concat.dist.src %>',
+            '<%= concat.dist.dest %>'
+        ]
     },
     watch: {
 		files: ['<%= jshint.files %>'],
@@ -52,7 +52,7 @@ module.exports = function(grunt) {
     },
 	jsdoc : {
         dist : {
-            src: ['SensorTag.js'], 
+            src: ['<%= concat.dist.src %>'], 
             options: {
                 destination: 'doc'
             }
