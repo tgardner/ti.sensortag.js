@@ -1,6 +1,11 @@
 {
   "name": "ti-sensortag.js",
   "version": "0.1.0",
+  "repository" :
+  { 
+	"type" : "git",
+	"url" : "https://github.com/tgardner/ti.sensortag.js.git"
+  },
   "devDependencies": {
     "grunt": "~0.4.2",
     "grunt-contrib-watch": "~0.5.3",
