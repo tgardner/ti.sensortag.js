@@ -1,21 +1,23 @@
 
+var Constants = require('../Constants.js'),
+    SensorBase = require('../SensorBase.js');
+
 /**
 * A class representing the Gyroscope sensor
 * @param {SensorTag} sensorTag The SensorTag this sensor belongs to
 */
-SensorTag.Gyroscope = function (sensorTag) {
-    var UUID_DATA = "f000aa51-0451-4000-b000-000000000000",
-        UUID_CONF = "f000aa52-0451-4000-b000-000000000000",
-        UUID_PERIOD = "f000aa53-0451-4000-b000-000000000000";
+var Gyroscope = function (sensorTag) {
+    SensorBase.call(this, 
+        "Gyroscope", 
+        sensorTag, 
+        GYROSCOPE_UUID_DATA, 
+        GYROSCOPE_UUID_CONF, 
+        GYROSCOPE_UUID_PERIOD);
 
-    SensorTag.SensorBase.prototype.constructor.call(this, sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD);
-
-    this.Axis = SensorTag.Gyroscope.Axis.XYZ;
-    this.identifier = "Gyroscope";
+    this.Axis = Gyroscope.Axis.XYZ;
 };
 
-SensorTag.Gyroscope.UUID_SERVICE = "f000aa50-0451-4000-b000-000000000000";
-SensorTag.Gyroscope.Axis = {
+Gyroscope.Axis = {
     X: 1,
     Y: 2,
     XY: 3,
@@ -25,35 +27,37 @@ SensorTag.Gyroscope.Axis = {
     XYZ: 7,
 };
 
-SensorTag.Gyroscope.prototype = new SensorTag.SensorBase();
-SensorTag.Gyroscope.prototype.constructor = SensorTag.Gyroscope;
+Gyroscope.prototype = new SensorBase();
+Gyroscope.prototype.constructor = Gyroscope;
 
-SensorTag.Gyroscope.prototype.enable = function () {
-    SensorTag.SensorBase.prototype.enable.call(this, this.Axis);
+Gyroscope.prototype.enable = function () {
+    SensorBase.prototype.enable.call(this, this.Axis);
 };
+
+
+// Converting from raw data to degrees/second.
+function getDegreesPerSecond(value) {
+    // Calculate rotation, unit deg/s, range -250, +250
+    var d = value * (500.0 / 65536.0);
+    
+    // Round to 2 decimal places
+    return Math.round(d * 100) / 100;
+}
 
 /**
 * Calculates the offset of the axis in degrees
 * @param {Array} data The raw sensor data
 * @returns {Number}
 */
-SensorTag.Gyroscope.prototype.calculateAxisValue = function (data) {
-    var v = new Int16Array(data),
-        scaleAxis;
-
-    // Converting from raw data to degrees/second.
-    scaleAxis = function (raw) {
-        // Calculate rotation, unit deg/s, range -250, +250
-        var degrees = raw * (500.0 / 65536.0);
-
-        // Round to 2 decimal places
-        return Math.round(degrees * 100) / 100;
-    };
-
+Gyroscope.prototype.calculateAxisValue = function (data) {
+    var v = new Int16Array(data);
+    
     // x, y, z has a wierd order
     return {
-        y: scaleAxis(v[0]),
-        x: scaleAxis(v[1]),
-        z: scaleAxis(v[2]),
+        y: getDegreesPerSecond(v[0]),
+        x: getDegreesPerSecond(v[1]),
+        z: getDegreesPerSecond(v[2]),
     };
 };
+
+module.exports = Gyroscope;

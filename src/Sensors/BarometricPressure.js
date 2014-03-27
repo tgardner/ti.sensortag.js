@@ -1,38 +1,37 @@
 
+var Constants = require('../Constants.js'),
+    SensorBase = require('../SensorBase.js');
+
 /**
 * A class representing the BarometricPressure sensor
 * @param {SensorTag} sensorTag The SensorTag this sensor belongs to
 */
-SensorTag.BarometricPressure = function (sensorTag) {
-    var UUID_DATA = "f000aa41-0451-4000-b000-000000000000",
-        UUID_CONF = "f000aa42-0451-4000-b000-000000000000",
-        UUID_PERIOD = "f000aa44-0451-4000-b000-000000000000";
+var BarometricPressure = function (sensorTag) {
+    SensorBase.call(this,
+        "BarometricPressure",
+        sensorTag, 
+        BAROMETRICPRESSURE_UUID_DATA, 
+        BAROMETRICPRESSURE_UUID_CONF, 
+        BAROMETRICPRESSURE_UUID_PERIOD);
 
-    SensorTag.SensorBase.prototype.constructor.call(this, sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD);
-
-    this.UUID_CALIBRATION = "f000aa43-0451-4000-b000-000000000000";
-
-    this.identifier = "BarametricPressure";
     this.calibration = [0, 0, 0, 0, 0, 0, 0, 0];
     this._handles.calibration = null;
 };
 
-SensorTag.BarometricPressure.UUID_SERVICE = "f000aa40-0451-4000-b000-000000000000";
+BarometricPressure.prototype = new SensorBase();
+BarometricPressure.prototype.constructor = BarometricPressure;
 
-SensorTag.BarometricPressure.prototype = new SensorTag.SensorBase();
-SensorTag.BarometricPressure.prototype.constructor = SensorTag.BarometricPressure;
-
-SensorTag.BarometricPressure.prototype.init = function (service) {
+BarometricPressure.prototype.init = function (service) {
     for (var ci in service.characteristics) {
         var characteristic = service.characteristics[ci];
         switch (characteristic.uuid) {
-            case this.UUID_CALIBRATION:
+            case Constants.BAROMETRICPRESSURE_UUID_CALIBRATION:
                 this._handles.calibration = characteristic.uuid;
                 break;
         }
     }
 
-    SensorTag.SensorBase.prototype.init.call(this, service);
+    SensorBase.prototype.init.call(this, service);
 };
 
 /**
@@ -40,7 +39,7 @@ SensorTag.BarometricPressure.prototype.init = function (service) {
 * @param {callback} win The success callback
 * @param {callback} fail The failure callback
 */
-SensorTag.BarometricPressure.prototype.readCalibration = function (win, fail) {
+BarometricPressure.prototype.readCalibration = function (win, fail) {
     var self = this,
         CALIBRATE = 2,
         error;
@@ -75,7 +74,7 @@ SensorTag.BarometricPressure.prototype.readCalibration = function (win, fail) {
         });
 };
 
-SensorTag.BarometricPressure.prototype.enable = function () {
+BarometricPressure.prototype.enable = function () {
     this.readCalibration(SensorBase.prototype.enable);
 };
 
@@ -84,7 +83,7 @@ SensorTag.BarometricPressure.prototype.enable = function () {
 * @param {Array} data The raw sensor data
 * returns {Number}
 */
-SensorTag.BarometricPressure.prototype.calculatePressure = function (data) {
+BarometricPressure.prototype.calculatePressure = function (data) {
     var d = new Int16Array(data),
         t_r = d[0],
         p_r = d[1],
@@ -97,3 +96,5 @@ SensorTag.BarometricPressure.prototype.calculatePressure = function (data) {
 
     return (S * p_r + O) / Math.Pow(2, 14);
 };
+
+module.exports = BarometricPressure;

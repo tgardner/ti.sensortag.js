@@ -1,34 +1,35 @@
 
+var Constants = require('../Constants.js'),
+    SensorBase = require('../SensorBase.js');
+
 /**
 * A class representing the IR Temperature sensor
 * @param {SensorTag} sensorTag The SensorTag this sensor belongs to
 */
-SensorTag.IRTemperature = function (sensorTag) {
-    var UUID_DATA = "f000aa01-0451-4000-b000-000000000000",
-        UUID_CONF = "f000aa02-0451-4000-b000-000000000000",
-        UUID_PERIOD = "f000aa03-0451-4000-b000-000000000000";
-
-    SensorTag.SensorBase.prototype.constructor.call(this, sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD);
-
-    this.identifier = "IRTemperature";
-    this.scale = SensorTag.IRTemperature.Scale.Celcius;
+var IRTemperature = function (sensorTag) {
+    SensorBase.call(this, 
+        "IRTemperature",
+        sensorTag, 
+        IRTEMPERATURE_UUID_DATA, 
+        IRTEMPERATURE_UUID_CONF, 
+        IRTEMPERATURE_UUID_PERIOD);
+        
+    this.scale = IRTemperature.Scale.Celcius;
 };
 
-SensorTag.IRTemperature.UUID_SERVICE = "f000aa00-0451-4000-b000-000000000000";
-
-SensorTag.IRTemperature.prototype = new SensorTag.SensorBase();
-SensorTag.IRTemperature.prototype.constructor = SensorTag.IRTemperature;
+IRTemperature.prototype = new SensorBase();
+IRTemperature.prototype.constructor = IRTemperature;
 
 /**
 * Scales the given temperature
 * @param {Number} t The temperature
-* @param {SensorTag.IRTemperature.Scale} [scale] The scale
+* @param {IRTemperature.Scale} [scale] The scale
 */
-SensorTag.IRTemperature.prototype.scaleTemperature = function (t, scale) {
+IRTemperature.prototype.scaleTemperature = function (t, scale) {
     scale = scale || this.scale;
 
     switch (scale) {
-        case SensorTag.IRTemperature.Scale.Farenheit:
+        case IRTemperature.Scale.Farenheit:
             t = t * 1.8 + 32.0;
             break;
     }
@@ -39,10 +40,10 @@ SensorTag.IRTemperature.prototype.scaleTemperature = function (t, scale) {
 /**
 * Calculates the ambient temperature
 * @param {Array} data The raw sensor data
-* @param {SensorTag.IRTemperature.Scale} [scale] The scale
+* @param {IRTemperature.Scale} [scale] The scale
 * @returns {Number} 
 */
-SensorTag.IRTemperature.prototype.calculateAmbientTemperature = function (data, scale) {
+IRTemperature.prototype.calculateAmbientTemperature = function (data, scale) {
     var t = new Int16Array(data),
         temperature = t[1] / 128.0;
 
@@ -52,11 +53,11 @@ SensorTag.IRTemperature.prototype.calculateAmbientTemperature = function (data, 
 /**
 * Calculates the target temperature
 * @param {Array} data The raw sensor data
-* @param {SensorTag.IRTemperature.Scale} [scale] The scale
+* @param {IRTemperature.Scale} [scale] The scale
 * @returns {Number} 
 */
-SensorTag.IRTemperature.prototype.calculateTargetTemperature = function (data, scale) {
-    var ambientTemperature = this.calculateAmbientTemperature(data, SensorTag.IRTemperature.Scale.Celcius),
+IRTemperature.prototype.calculateTargetTemperature = function (data, scale) {
+    var ambientTemperature = this.calculateAmbientTemperature(data, IRTemperature.Scale.Celcius),
         t = new Int16Array(data),
         Vobj2 = t[0] * 0.00000015625,
         Tdie = ambientTemperature + 273.15,
@@ -76,7 +77,9 @@ SensorTag.IRTemperature.prototype.calculateTargetTemperature = function (data, s
     return this.scaleTemperature(tObj, scale);
 };
 
-SensorTag.IRTemperature.Scale = {
+IRTemperature.Scale = {
     Celcius: 0,
     Farenheit: 1,
 };
+
+module.exports = IRTemperature;

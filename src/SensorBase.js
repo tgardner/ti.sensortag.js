@@ -1,13 +1,14 @@
 
 /**
 * The base class representing each sensor
+* @param {string} name The name of the sensor
 * @param {SensorTag} sensorTag The SensorTag object this sensor belongs to
 * @param {uuid} UUID_DATA The UUID of the data characteristic
 * @param {uuid} UUID_CONF The UUID of the configuration characteristic
 * @param {uuid} UUID_PERIOD The UUID of the period characteristic
 */
-SensorTag.SensorBase = function (sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD) {
-    this.identifier = "Sensor";
+var SensorBase = function (name, sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD) {
+    this.identifier = name;
 
     this.sensorTag = sensorTag;
     this.UUID_DATA = UUID_DATA;
@@ -30,7 +31,7 @@ SensorTag.SensorBase = function (sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD) {
 * Initializes the sensor with the SensorTag service information
 * @param {service} service The SensorTag service object
 */
-SensorTag.SensorBase.prototype.init = function (service) {
+SensorBase.prototype.init = function (service) {
     for (var ci in service.characteristics) {
         var characteristic = service.characteristics[ci];
         switch (characteristic.uuid) {
@@ -58,7 +59,7 @@ SensorTag.SensorBase.prototype.init = function (service) {
 * Logs a message on behalf of the sensor
 * @param {string} message The message to log
 */
-SensorTag.SensorBase.prototype.log = function (message) {
+SensorBase.prototype.log = function (message) {
     this.sensorTag.log(this.identifier + ': ' + message);
 };
 
@@ -66,7 +67,7 @@ SensorTag.SensorBase.prototype.log = function (message) {
 * Enables the sensor
 * @param {Integer} [value] The value to initialize the sensor with
 */
-SensorTag.SensorBase.prototype.enable = function (value) {
+SensorBase.prototype.enable = function (value) {
     var ON = 1,
         self = this;
 
@@ -85,7 +86,7 @@ SensorTag.SensorBase.prototype.enable = function (value) {
 /**
 * Disables the sensor
 */
-SensorTag.SensorBase.prototype.disable = function () {
+SensorBase.prototype.disable = function () {
     var OFF = 0,
         self = this;
 
@@ -104,7 +105,7 @@ SensorTag.SensorBase.prototype.disable = function () {
 /**
 * Enables notifications for the sensor
 */
-SensorTag.SensorBase.prototype.enableNotifications = function () {
+SensorBase.prototype.enableNotifications = function () {
     var ENABLE_NOTIFICATIONS = [1, 0],
         self = this;
 
@@ -133,7 +134,7 @@ SensorTag.SensorBase.prototype.enableNotifications = function () {
 /**
 * Disables notifications for the sensor
 */
-SensorTag.SensorBase.prototype.disableNotification = function () {
+SensorBase.prototype.disableNotification = function () {
     var DISABLE_NOTIFICATIONS = [0, 0],
         self = this;
 
@@ -164,7 +165,7 @@ SensorTag.SensorBase.prototype.disableNotification = function () {
 * @param {callback} callback The callback to receive updates from the sensor
 * @returns {handle} The callback handle
 */
-SensorTag.SensorBase.prototype.addListener = function (callback) {
+SensorBase.prototype.addListener = function (callback) {
     this._listeners.push(callback);
 
     // Return a handle
@@ -175,16 +176,18 @@ SensorTag.SensorBase.prototype.addListener = function (callback) {
 * Removes a notification listener
 * @param {handle} handle The handle for the callback
 */
-SensorTag.SensorBase.prototype.removeListener = function (handle) {
+SensorBase.prototype.removeListener = function (handle) {
     this._listeners.splice(handle, 1);
 };
 
 /**
 * Notifies all the listeners
 */
-SensorTag.SensorBase.prototype.onDataNotify = function () {
+SensorBase.prototype.onDataNotify = function () {
     for (var li in this._listeners) {
         var listener = this._listeners[li];
         listener.apply(this, arguments);
     }
 };
+
+module.exports = SensorBase;

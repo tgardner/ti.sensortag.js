@@ -1,4 +1,6 @@
 
+var Constants = require('./Constants.js');
+
 /**
 * A class representing the TI SensorTag
 * @constructor
@@ -10,13 +12,21 @@ var SensorTag = function (device) {
     this.services = [];
 
     this.Accelerometer = new SensorTag.Accelerometer(this);
-    this.IRTemperature = new SensorTag.IRTemperature(this);
-    this.Humidity = new SensorTag.Humidity(this);
-    this.Magnetometer = new SensorTag.Magnetometer(this);
     this.BarometricPressure = new SensorTag.BarometricPressure(this);
     this.Gyroscope = new SensorTag.Gyroscope(this);
+    this.Humidity = new SensorTag.Humidity(this);
+    this.IRTemperature = new SensorTag.IRTemperature(this);
+    this.Magnetometer = new SensorTag.Magnetometer(this);
     this.SimpleKey = new SensorTag.SimpleKey(this);
 };
+
+SensorTag.Accelerometer = require('./Sensors/Accelerometer.js');
+SensorTag.BarometricPressure = require('./Sensors/BarometricPressure.js');
+SensorTag.Gyroscope = require('./Sensors/Gyroscope.js');
+SensorTag.Humidity = require('./Sensors/Humidity.js');
+SensorTag.IRTemperature = require('./Sensors/Humidity.js');
+SensorTag.Magnetometer = require('./Sensors/Humidity.js');
+SensorTag.SimplyKey = require('./Sensors/SimpleKey');
 
 /**
 * Logs a message on behalf of the SensorTag
@@ -36,31 +46,31 @@ SensorTag.prototype.init = function () {
         var service = self.services[i];
 
         switch (service.uuid) {
-            case SensorTag.Accelerometer.UUID_SERVICE:
+            case Constants.ACCELEROMETER_UUID_SERVICE:
                 self.Accelerometer.init(service);
                 break;
-
-            case SensorTag.IRTemperature.UUID_SERVICE:
-                self.IRTemperature.init(service);
+                
+            case Constants.BAROMETRICPRESSURE_UUID_SERVICE:
+                self.BarometricPressure.init(service);
                 break;
-
-            case SensorTag.Humidity.UUID_SERVICE:
+                
+            case Constants.GYROSCOPE_UUID_SERVICE:
+                self.Gyroscope.init(service);
+                break;
+                
+            case Constants.HUMIDITY_UUID_SERVICE:
                 self.Humidity.init(service);
                 break;
 
-            case SensorTag.Magnetometer.UUID_SERVICE:
+            case Constants.IRTEMPERATURE_UUID_SERVICE:
+                self.IRTemperature.init(service);
+                break;
+
+            case Constants.MAGNETOMETER_UUID_SERVICE:
                 self.Magnetometer.init(service);
                 break;
 
-            case SensorTag.BarometricPressure.UUID_SERVICE:
-                self.BarometricPressure.init(service);
-                break;
-
-            case SensorTag.Gyroscope.UUID_SERVICE:
-                self.Gyroscope.init(service);
-                break;
-
-            case SensorTag.SimpleKey.UUID_SERVICE:
+            case Constants.SIMPLEKEY_UUID_SERVICE:
                 self.SimpleKey.init(service);
                 break;
         }
@@ -199,3 +209,5 @@ SensorTag.prototype.discoverDescriptors = function (characteristic, win, fail) {
 SensorTag.prototype.close = function () {
     evothings.ble.close(this.device);
 };
+
+module.exports = SensorTag;
