@@ -29,13 +29,13 @@ module.exports = function(grunt) {
                 'src/Sensors/Gyroscope.js',
                 'src/Sensors/SimpleKey.js'
             ],
-            dest: 'SensorTag.js'
+            dest: 'dist/SensorTag.js'
         }
     },
     uglify: {
         my_target: {
             files: {
-                'SensorTag.min.js': '<%= concat.dist.dest %>'
+                'dist/SensorTag.min.js': '<%= concat.dist.dest %>'
             }
         }
     },

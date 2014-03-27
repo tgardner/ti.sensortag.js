@@ -1,4 +1,5 @@
 node_modules/
 doc/
-/SensorTag*.js
 npm-debug.log
+bower_components/
+ti.sensortag.js.esproj/
