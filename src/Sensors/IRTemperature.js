@@ -1,6 +1,6 @@
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /**
 * A class representing the IR Temperature sensor
@@ -10,9 +10,9 @@ var IRTemperature = function (sensorTag) {
     SensorBase.call(this, 
         "IRTemperature",
         sensorTag, 
-        IRTEMPERATURE_UUID_DATA, 
-        IRTEMPERATURE_UUID_CONF, 
-        IRTEMPERATURE_UUID_PERIOD);
+        Constants.IRTEMPERATURE_UUID_DATA, 
+        Constants.IRTEMPERATURE_UUID_CONF, 
+        Constants.IRTEMPERATURE_UUID_PERIOD);
         
     this.scale = IRTemperature.Scale.Celcius;
 };

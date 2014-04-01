@@ -1,7 +1,7 @@
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js'),
-    Accelerometer = require('./Accelerometer.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase'),
+    Accelerometer = require('./Accelerometer');
 
 /**
 * A class representing the Magnetometer sensor
@@ -11,9 +11,9 @@ var Magnetometer = function (sensorTag) {
     SensorBase.call(this, 
         "Magnetometer", 
         sensorTag, 
-        MAGNETOMETER_UUID_DATA, 
-        MAGNETOMETER_UUID_CONF, 
-        MAGNETOMETER_UUID_PERIOD);
+        Constants.MAGNETOMETER_UUID_DATA, 
+        Constants.MAGNETOMETER_UUID_CONF, 
+        Constants.MAGNETOMETER_UUID_PERIOD);
 };
 
 Magnetometer.prototype = new SensorBase();

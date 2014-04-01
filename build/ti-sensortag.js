@@ -235,7 +235,7 @@ module.exports = SensorBase;
 
 },{}],3:[function(require,module,exports){
 
-var Constants = require('./Constants.js');
+var Constants = require('./Constants');
 
 /**
 * A class representing the TI SensorTag
@@ -256,12 +256,12 @@ var SensorTag = function (device) {
     this.SimpleKey = new SensorTag.SimpleKey(this);
 };
 
-SensorTag.Accelerometer = require('./Sensors/Accelerometer.js');
-SensorTag.BarometricPressure = require('./Sensors/BarometricPressure.js');
-SensorTag.Gyroscope = require('./Sensors/Gyroscope.js');
-SensorTag.Humidity = require('./Sensors/Humidity.js');
-SensorTag.IRTemperature = require('./Sensors/Humidity.js');
-SensorTag.Magnetometer = require('./Sensors/Humidity.js');
+SensorTag.Accelerometer = require('./Sensors/Accelerometer');
+SensorTag.BarometricPressure = require('./Sensors/BarometricPressure');
+SensorTag.Gyroscope = require('./Sensors/Gyroscope');
+SensorTag.Humidity = require('./Sensors/Humidity');
+SensorTag.IRTemperature = require('./Sensors/Humidity');
+SensorTag.Magnetometer = require('./Sensors/Magnetometer');
 SensorTag.SimplyKey = require('./Sensors/SimpleKey');
 
 /**
@@ -446,13 +446,12 @@ SensorTag.prototype.close = function () {
     evothings.ble.close(this.device);
 };
 
-console.log(SensorTag);
 module.exports = SensorTag;
 
-},{"./Constants.js":1,"./Sensors/Accelerometer.js":4,"./Sensors/BarometricPressure.js":5,"./Sensors/Gyroscope.js":6,"./Sensors/Humidity.js":7,"./Sensors/SimpleKey":8}],4:[function(require,module,exports){
+},{"./Constants":1,"./Sensors/Accelerometer":4,"./Sensors/BarometricPressure":5,"./Sensors/Gyroscope":6,"./Sensors/Humidity":7,"./Sensors/Magnetometer":8,"./Sensors/SimpleKey":9}],4:[function(require,module,exports){
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /** 
  * A class representing the Accelerometer sensor
@@ -518,10 +517,10 @@ Accelerometer.prototype.calculateAcceleration = function (data, scale) {
 
 module.exports = Accelerometer;
 
-},{"../Constants.js":1,"../SensorBase.js":2}],5:[function(require,module,exports){
+},{"../Constants":1,"../SensorBase":2}],5:[function(require,module,exports){
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /**
 * A class representing the BarometricPressure sensor
@@ -531,9 +530,9 @@ var BarometricPressure = function (sensorTag) {
     SensorBase.call(this,
         "BarometricPressure",
         sensorTag, 
-        BAROMETRICPRESSURE_UUID_DATA, 
-        BAROMETRICPRESSURE_UUID_CONF, 
-        BAROMETRICPRESSURE_UUID_PERIOD);
+        Constants.BAROMETRICPRESSURE_UUID_DATA, 
+        Constants.BAROMETRICPRESSURE_UUID_CONF, 
+        Constants.BAROMETRICPRESSURE_UUID_PERIOD);
 
     this.calibration = [0, 0, 0, 0, 0, 0, 0, 0];
     this._handles.calibration = null;
@@ -620,10 +619,10 @@ BarometricPressure.prototype.calculatePressure = function (data) {
 
 module.exports = BarometricPressure;
 
-},{"../Constants.js":1,"../SensorBase.js":2}],6:[function(require,module,exports){
+},{"../Constants":1,"../SensorBase":2}],6:[function(require,module,exports){
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /**
 * A class representing the Gyroscope sensor
@@ -633,9 +632,9 @@ var Gyroscope = function (sensorTag) {
     SensorBase.call(this, 
         "Gyroscope", 
         sensorTag, 
-        GYROSCOPE_UUID_DATA, 
-        GYROSCOPE_UUID_CONF, 
-        GYROSCOPE_UUID_PERIOD);
+        Constants.GYROSCOPE_UUID_DATA, 
+        Constants.GYROSCOPE_UUID_CONF, 
+        Constants.GYROSCOPE_UUID_PERIOD);
 
     this.Axis = Gyroscope.Axis.XYZ;
 };
@@ -685,10 +684,10 @@ Gyroscope.prototype.calculateAxisValue = function (data) {
 
 module.exports = Gyroscope;
 
-},{"../Constants.js":1,"../SensorBase.js":2}],7:[function(require,module,exports){
+},{"../Constants":1,"../SensorBase":2}],7:[function(require,module,exports){
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /**
 * A class representing the Humidity sensor
@@ -698,9 +697,9 @@ var Humidity = function (sensorTag) {
     SensorBase.call(this, 
         "Humidity",
         sensorTag, 
-        HUMIDITY_UUID_DATA, 
-        HUMIDITY_UUID_CONF, 
-        HUMIDITY_UUID_PERIOD);
+        Constants.HUMIDITY_UUID_DATA, 
+        Constants.HUMIDITY_UUID_CONF, 
+        Constants.HUMIDITY_UUID_PERIOD);
 };
 
 Humidity.prototype = new SensorBase();
@@ -725,10 +724,59 @@ Humidity.prototype.calculateHumidity = function (data) {
 
 module.exports = Humidity;
 
-},{"../Constants.js":1,"../SensorBase.js":2}],8:[function(require,module,exports){
+},{"../Constants":1,"../SensorBase":2}],8:[function(require,module,exports){
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase'),
+    Accelerometer = require('./Accelerometer');
+
+/**
+* A class representing the Magnetometer sensor
+* @param {SensorTag} sensorTag The SensorTag this sensor belongs to
+*/
+var Magnetometer = function (sensorTag) {
+    SensorBase.call(this, 
+        "Magnetometer", 
+        sensorTag, 
+        Constants.MAGNETOMETER_UUID_DATA, 
+        Constants.MAGNETOMETER_UUID_CONF, 
+        Constants.MAGNETOMETER_UUID_PERIOD);
+};
+
+Magnetometer.prototype = new SensorBase();
+Magnetometer.prototype.constructor = Magnetometer;
+
+/**
+* Sets the refresh period for notifications
+* @param {Integer} sampleRate The sample rate in milliseconds
+*/
+Magnetometer.prototype.setPeriod = Accelerometer.prototype.setPeriod;
+
+function scaleAxis(value) {
+    return value * (2000.0 / 65336.0);
+}
+
+/**
+* Calculates the coordinates
+* @param {Array} data The raw sensor data
+* @returns {Object} 
+*/
+Magnetometer.prototype.calculateCoordinates = function (data) {
+    var m = new Int16Array(data);
+    
+    return {
+        x: scaleAxis(m[0]),
+        y: scaleAxis(m[1]),
+        z: scaleAxis(m[2])
+    };
+};
+
+module.exports = Magnetometer;
+
+},{"../Constants":1,"../SensorBase":2,"./Accelerometer":4}],9:[function(require,module,exports){
+
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
     
 /**
 * A class representing the SimpleKey sensor
@@ -755,4 +803,4 @@ delete SimpleKey.prototype.disable;
 
 module.exports = SimpleKey;
 
-},{"../Constants.js":1,"../SensorBase.js":2}]},{},[3]);
+},{"../Constants":1,"../SensorBase":2}]},{},[3]);

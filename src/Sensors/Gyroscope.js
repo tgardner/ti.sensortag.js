@@ -1,6 +1,6 @@
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /**
 * A class representing the Gyroscope sensor
@@ -10,9 +10,9 @@ var Gyroscope = function (sensorTag) {
     SensorBase.call(this, 
         "Gyroscope", 
         sensorTag, 
-        GYROSCOPE_UUID_DATA, 
-        GYROSCOPE_UUID_CONF, 
-        GYROSCOPE_UUID_PERIOD);
+        Constants.GYROSCOPE_UUID_DATA, 
+        Constants.GYROSCOPE_UUID_CONF, 
+        Constants.GYROSCOPE_UUID_PERIOD);
 
     this.Axis = Gyroscope.Axis.XYZ;
 };

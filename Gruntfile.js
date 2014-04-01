@@ -11,20 +11,20 @@ module.exports = function(grunt) {
     browserify: {
       dist: {
         files: {
-          'build/SensorTag.js': ['src/SensorTag.js'],
+          'build/<%= pkg.name %>.js': ['src/SensorTag.js'],
         }
       }
     },
     uglify: {
         my_target: {
             files: {
-                'build/SensorTag.min.js': 'build/SensorTag.js'
+                'build/<%= pkg.name %>.min.js': 'build/<%= pkg.name %>.js'
             }
         }
     },
     watch: {
 		files: ['<%= jshint.files %>'],
-		tasks: ['browserify','jshint']
+		tasks: ['jshint', 'browserify']
     },
 	jsdoc : {
         dist : {

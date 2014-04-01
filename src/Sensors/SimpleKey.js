@@ -1,6 +1,6 @@
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
     
 /**
 * A class representing the SimpleKey sensor

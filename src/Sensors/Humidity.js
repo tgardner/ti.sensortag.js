@@ -1,6 +1,6 @@
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /**
 * A class representing the Humidity sensor
@@ -10,9 +10,9 @@ var Humidity = function (sensorTag) {
     SensorBase.call(this, 
         "Humidity",
         sensorTag, 
-        HUMIDITY_UUID_DATA, 
-        HUMIDITY_UUID_CONF, 
-        HUMIDITY_UUID_PERIOD);
+        Constants.HUMIDITY_UUID_DATA, 
+        Constants.HUMIDITY_UUID_CONF, 
+        Constants.HUMIDITY_UUID_PERIOD);
 };
 
 Humidity.prototype = new SensorBase();

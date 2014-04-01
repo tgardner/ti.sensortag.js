@@ -1,6 +1,6 @@
 
-var Constants = require('../Constants.js'),
-    SensorBase = require('../SensorBase.js');
+var Constants = require('../Constants'),
+    SensorBase = require('../SensorBase');
 
 /**
 * A class representing the BarometricPressure sensor
@@ -10,9 +10,9 @@ var BarometricPressure = function (sensorTag) {
     SensorBase.call(this,
         "BarometricPressure",
         sensorTag, 
-        BAROMETRICPRESSURE_UUID_DATA, 
-        BAROMETRICPRESSURE_UUID_CONF, 
-        BAROMETRICPRESSURE_UUID_PERIOD);
+        Constants.BAROMETRICPRESSURE_UUID_DATA, 
+        Constants.BAROMETRICPRESSURE_UUID_CONF, 
+        Constants.BAROMETRICPRESSURE_UUID_PERIOD);
 
     this.calibration = [0, 0, 0, 0, 0, 0, 0, 0];
     this._handles.calibration = null;

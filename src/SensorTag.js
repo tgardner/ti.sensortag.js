@@ -1,5 +1,5 @@
 
-var Constants = require('./Constants.js');
+var Constants = require('./Constants');
 
 /**
 * A class representing the TI SensorTag
@@ -20,12 +20,12 @@ var SensorTag = function (device) {
     this.SimpleKey = new SensorTag.SimpleKey(this);
 };
 
-SensorTag.Accelerometer = require('./Sensors/Accelerometer.js');
-SensorTag.BarometricPressure = require('./Sensors/BarometricPressure.js');
-SensorTag.Gyroscope = require('./Sensors/Gyroscope.js');
-SensorTag.Humidity = require('./Sensors/Humidity.js');
-SensorTag.IRTemperature = require('./Sensors/Humidity.js');
-SensorTag.Magnetometer = require('./Sensors/Humidity.js');
+SensorTag.Accelerometer = require('./Sensors/Accelerometer');
+SensorTag.BarometricPressure = require('./Sensors/BarometricPressure');
+SensorTag.Gyroscope = require('./Sensors/Gyroscope');
+SensorTag.Humidity = require('./Sensors/Humidity');
+SensorTag.IRTemperature = require('./Sensors/Humidity');
+SensorTag.Magnetometer = require('./Sensors/Magnetometer');
 SensorTag.SimplyKey = require('./Sensors/SimpleKey');
 
 /**
