@@ -1,13 +1,18 @@
 
-var Constants = require('./Constants');
+var Constants = require('./Constants'),
+    Connector = require('./Connectors/Connector');
 
 /**
 * A class representing the TI SensorTag
 * @constructor
 * @param {handle} device The device handle from the 
-* evothings.ble connection object
+* connection object
 */
 var SensorTag = function (device) {
+    if(!(device instanceof Connector)) {
+        throw "Invalid device connector";
+    }
+
     this.device = device;
     this.services = [];
     
@@ -20,6 +25,7 @@ var SensorTag = function (device) {
     this.SimpleKey = new SensorTag.SimpleKey(this);
 };
 
+// Sensors
 SensorTag.Accelerometer = require('./Sensors/Accelerometer');
 SensorTag.BarometricPressure = require('./Sensors/BarometricPressure');
 SensorTag.Gyroscope = require('./Sensors/Gyroscope');
@@ -27,6 +33,9 @@ SensorTag.Humidity = require('./Sensors/Humidity');
 SensorTag.IRTemperature = require('./Sensors/Humidity');
 SensorTag.Magnetometer = require('./Sensors/Magnetometer');
 SensorTag.SimpleKey = require('./Sensors/SimpleKey');
+
+// Connectors
+SensorTag.NobleConnector = require('./Connectors/NobleConnector');
 
 /**
 * Logs a message on behalf of the SensorTag
@@ -43,9 +52,10 @@ SensorTag.prototype.init = function () {
     var self = this;
 
     for (var i = 0; i < self.services.length; ++i) {
-        var service = self.services[i];
-
-        switch (service.uuid) {
+        var service = self.services[i],
+            guid = service.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
+        
+        switch (guid) {
             case Constants.ACCELEROMETER_UUID_SERVICE:
                 self.Accelerometer.init(service);
                 break;
@@ -75,7 +85,7 @@ SensorTag.prototype.init = function () {
                 break;
         }
     }
-
+    
     self.log('Initialized');
 };
 
@@ -101,9 +111,9 @@ SensorTag.prototype.discover = function (win, fail) {
     self.log('Discovering Services');
 
     incrementCallTracer();
-    evothings.ble.services(
-        self.device,
-        function (services) {
+    
+    self.device.services(
+        function(services) {
             decrementCallTracer();
 
             self.services = services;
@@ -121,13 +131,14 @@ SensorTag.prototype.discover = function (win, fail) {
                     win.call(self);
             }
         },
-        function (errorCode) {
+        function(error) {
             decrementCallTracer();
-            self.log('Services error: ' + errorCode);
+            self.log('Services error: ' + error);
 
             if (fail !== undefined)
-                fail.call(self, errorCode);
-        });
+                fail.call(self, error);
+        }
+    );
 };
 
 /**
@@ -140,9 +151,8 @@ SensorTag.prototype.discoverCharacteristics = function (service, win, fail) {
     var self = this;
 
     incrementCallTracer();
-    evothings.ble.characteristics(
-        self.device,
-        service.handle,
+    self.device.characteristics(
+        service,
         function (characteristics) {
             decrementCallTracer();
 
@@ -167,7 +177,8 @@ SensorTag.prototype.discoverCharacteristics = function (service, win, fail) {
 
             if (fail !== undefined)
                 fail.call(self, errorCode);
-        });
+        }
+    );
 };
 
 /**
@@ -180,13 +191,12 @@ SensorTag.prototype.discoverDescriptors = function (characteristic, win, fail) {
     var self = this;
 
     incrementCallTracer();
-    evothings.ble.descriptors(
-        self.device,
-        characteristic.handle,
+    self.device.descriptors(
+        characteristic,
         function (descriptors) {
             decrementCallTracer();
             characteristic.descriptors = descriptors;
-
+            
             if (gCallTracer === 0) {
                 self.init();
 
@@ -200,14 +210,15 @@ SensorTag.prototype.discoverDescriptors = function (characteristic, win, fail) {
 
             if (fail !== undefined)
                 fail.call(self, errorCode);
-        });
+        }
+    );
 };
 
 /**
 * Closes the connection to the SensorTag
 */
 SensorTag.prototype.close = function () {
-    evothings.ble.close(this.device);
+    this.device.close();
 };
 
 module.exports = SensorTag;

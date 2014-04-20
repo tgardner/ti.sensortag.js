@@ -1,3 +1,4 @@
+var Constants = require('./Constants.js');
 
 /**
 * The base class representing each sensor
@@ -17,10 +18,13 @@ var SensorBase = function (name, sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD) {
 
     this.enabled = false;
 
-    this._handles = {
+    this.characteristics = {
         config: null,
         period: null,
         data: null,
+    };
+    
+    this.descriptors = {
         notification: null
     };
 
@@ -33,26 +37,32 @@ var SensorBase = function (name, sensorTag, UUID_DATA, UUID_CONF, UUID_PERIOD) {
 */
 SensorBase.prototype.init = function (service) {
     for (var ci in service.characteristics) {
-        var characteristic = service.characteristics[ci];
-        switch (characteristic.uuid) {
+        var characteristic = service.characteristics[ci],
+            cGuid = characteristic.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
+        
+        switch (cGuid) {
             case this.UUID_CONF:
-                this._handles.config = characteristic.handle;
+                this.characteristics.config = characteristic;
                 break;
             case this.UUID_PERIOD:
-                this._handles.period = characteristic.handle;
+                this.characteristics.period = characteristic;
                 break;
             case this.UUID_DATA:
-                this._handles.data = characteristic.handle;
+                this.characteristics.data = characteristic;
 
                 for (var di in characteristic.descriptors) {
-                    var descriptor = characteristic.descriptors[di];
-                    if (descriptor.uuid == GATT_CLIENT_CHAR_CFG_UUID) {
-                        this._handles.notification = descriptor.handle;
+                    var descriptor = characteristic.descriptors[di],
+                        dGuid = descriptor.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
+                    
+                    if (dGuid == Constants.GATT_CLIENT_CHAR_CFG_UUID || dGuid==2902) {
+                        this.descriptors.notification = descriptor;
                     }
                 }
                 break;
         }
     }
+    
+    this.log("Initialized");
 };
 
 /**
@@ -71,16 +81,17 @@ SensorBase.prototype.enable = function (value) {
     var ON = 1,
         self = this;
 
-    evothings.ble.writeCharacteristic(
-        self.sensorTag.device,
-        self._handles.config,
+    self.sensorTag.device.writeCharacteristic(
+        self.characteristics.config,
         new Uint8Array([value || ON]),
         function () {
             self.enabled = true;
+            self.log("Enabled");
         },
         function (errorCode) {
             self.log("enable error: " + errorCode);
-        });
+        }
+    );
 };
 
 /**
@@ -90,45 +101,46 @@ SensorBase.prototype.disable = function () {
     var OFF = 0,
         self = this;
 
-    evothings.ble.writeCharacteristic(
-        self.sensorTag.device,
-        self._handles.config,
+    self.sensorTag.device.writeCharacteristic(
+        self.characteristics.config,
         new Uint8Array([OFF]),
         function () {
-            self.enabled = false;
+            self.enabled = true;
+            self.log("Disabled");
         },
         function (errorCode) {
             self.log("disable error: " + errorCode);
-        });
+        }
+    );
 };
 
 /**
 * Enables notifications for the sensor
 */
-SensorBase.prototype.enableNotifications = function () {
+SensorBase.prototype.enableNotification = function () {
     var ENABLE_NOTIFICATIONS = [1, 0],
         self = this;
-
-    evothings.ble.writeDescriptor(
-        self.sensorTag.device,
-        self._handles.notification,
+    
+    self.sensorTag.device.writeDescriptor(
+        self.descriptors.notification,
         new Uint8Array(ENABLE_NOTIFICATIONS),
         function () {
             self.log("Notifications enabled");
         },
         function (errorCode) {
             self.log("enableNotifications write error: " + errorCode);
-        });
-
-    evothings.ble.enableNotification(
-        self.sensorTag.device,
-        self._handles.data,
-        function () {
+        }
+    );
+    
+    self.sensorTag.device.enableNotification(
+        self.characteristics.data,
+        function() {
             self.onDataNotify.apply(self, arguments);
         },
         function (errorCode) {
             self.log("enableNotifications subscribe error: " + errorCode);
-        });
+        }
+    );
 };
 
 /**
@@ -138,26 +150,26 @@ SensorBase.prototype.disableNotification = function () {
     var DISABLE_NOTIFICATIONS = [0, 0],
         self = this;
 
-    evothings.ble.writeDescriptor(
-        self.sensorTag.device,
-        self._handles.notification,
+    self.sensorTag.device.writeDescriptor(
+        self.descriptors.notification,
         new Uint8Array(DISABLE_NOTIFICATIONS),
         function () {
             self.log("Notifications disabled");
         },
         function (errorCode) {
             self.log("disableNotification write error: " + errorCode);
-        });
-
-    evothings.ble.disableNotification(
-        self.sensorTag.device,
-        self._handles.data,
-        function () {
+        }
+    );
+    
+    self.sensorTag.device.disableNotification(
+        self.characteristics.data,
+        function() {
             // Do nothing
         },
         function (errorCode) {
-            self.log("disableNotification unsubscribe error: " + errorCode);
-        });
+            self.log("disableNotification subscribe error: " + errorCode);
+        }
+    );
 };
 
 /**

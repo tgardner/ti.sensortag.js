@@ -27,16 +27,16 @@ Accelerometer.prototype.setPeriod = function (sampleRate) {
 	var period = Math.round(sampleRate / 10),
 		self = this;
 
-	evothings.ble.writeCharacteristic(
-			self.sensorTag.device,
-			self._handles.period,
-			new Uint8Array([period]),
-			function () {
-				self.log("Period set to " + sampleRate + "ms");
-			},
-			function (errorCode) {
-				self.log("setPeriod error: " + errorCode);
-			});
+    self.sensorTag.device.writeCharacteristic(
+        self.characteristics.period,
+        new Uint8Array([period]),
+        function () {
+            self.log("Period set to " + sampleRate + "ms");
+        },
+        function (errorCode) {
+            self.log("setPeriod error: " + errorCode);
+        }
+    );
 };
 
 function getAxisAcceleration(value, scale) {

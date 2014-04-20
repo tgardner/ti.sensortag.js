@@ -15,7 +15,7 @@ var BarometricPressure = function (sensorTag) {
         Constants.BAROMETRICPRESSURE_UUID_PERIOD);
 
     this.calibration = [0, 0, 0, 0, 0, 0, 0, 0];
-    this._handles.calibration = null;
+    this.characteristics.calibration = null;
 };
 
 BarometricPressure.prototype = new SensorBase();
@@ -23,10 +23,12 @@ BarometricPressure.prototype.constructor = BarometricPressure;
 
 BarometricPressure.prototype.init = function (service) {
     for (var ci in service.characteristics) {
-        var characteristic = service.characteristics[ci];
-        switch (characteristic.uuid) {
+        var characteristic = service.characteristics[ci],
+            cGuid = characteristic.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
+        
+        switch (cGuid) {
             case Constants.BAROMETRICPRESSURE_UUID_CALIBRATION:
-                this._handles.calibration = characteristic.uuid;
+                this.characteristics.calibration = characteristic;
                 break;
         }
     }
@@ -50,16 +52,13 @@ BarometricPressure.prototype.readCalibration = function (win, fail) {
         if(fail !== undefined)
             fail.call(self, errorCode);
     };
-
-    evothings.ble.writeCharacteristic(
-        self.sensorTag.device,
-        self._handles.config,
+    
+    self.sensorTag.device.writeCharacteristic(
+        self.characteristics.config,
         new Uint8Array([CALIBRATE]),
-        function () {
-
-            evothings.ble.readCharacteristic(
-                self.sensorTag.device,
-                self._handles.calibration,
+        function() {
+            self.sensorTag.device.readCharacteristic(
+                self.characteristics.calibration,
                 function (data) {
                     self.calibration = new Uint16Array(data);
 
@@ -67,11 +66,13 @@ BarometricPressure.prototype.readCalibration = function (win, fail) {
                         win.call(self, self.calibration);
                 }, function (errorCode) {
                     error('readCalibration read', errorCode);
-                });
-
-        }, function (errorCode) {
+                }
+            );
+        },
+        function (errorCode) {
             error('readCalibration write', errorCode);
-        });
+        }
+    );
 };
 
 BarometricPressure.prototype.enable = function () {
