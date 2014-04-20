@@ -5,7 +5,7 @@ var Constants = require('./Constants'),
 /**
 * A class representing the TI SensorTag
 * @constructor
-* @param {handle} device The device handle from the 
+* @param {Connector} device The device handle from the 
 * connection object
 */
 var SensorTag = function (device) {
@@ -36,6 +36,7 @@ SensorTag.SimpleKey = require('./Sensors/SimpleKey');
 
 // Connectors
 SensorTag.NobleConnector = require('./Connectors/NobleConnector');
+SensorTag.EvothingsConnector = require('./Connectors/EvothingsConnector');
 
 /**
 * Logs a message on behalf of the SensorTag
@@ -79,10 +80,10 @@ SensorTag.prototype.init = function () {
             case Constants.MAGNETOMETER_UUID_SERVICE:
                 self.Magnetometer.init(service);
                 break;
-
-            case Constants.SIMPLEKEY_UUID_SERVICE:
-                self.SimpleKey.init(service);
-                break;
+        }
+        
+        if(Constants.SIMPLEKEY_UUID_SERVICE.test(guid)) {
+            self.SimpleKey.init(service);
         }
     }
     

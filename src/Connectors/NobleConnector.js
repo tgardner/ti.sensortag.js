@@ -8,9 +8,7 @@ NobleConnector.prototype = new Connector();
 NobleConnector.prototype.constructor = NobleConnector;
 
 NobleConnector.prototype.services = function(win, fail) {
-    var self = this;
-    
-    self.peripheral.discoverServices(
+    this.peripheral.discoverServices(
         [], 
         function(error, services) {
             if(error) {

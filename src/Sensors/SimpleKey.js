@@ -9,6 +9,7 @@ var Constants = require('../Constants'),
 var SimpleKey = function (sensorTag) {
     SensorBase.call(this, 
         "SimpleKey", 
+        sensorTag,
         Constants.SIMPLEKEY_UUID_DATA);
 };
 

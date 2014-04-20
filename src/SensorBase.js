@@ -54,7 +54,7 @@ SensorBase.prototype.init = function (service) {
                     var descriptor = characteristic.descriptors[di],
                         dGuid = descriptor.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
                     
-                    if (dGuid == Constants.GATT_CLIENT_CHAR_CFG_UUID || dGuid==2902) {
+                    if (Constants.GATT_CLIENT_CHAR_CFG_UUID.test(dGuid)) {
                         this.descriptors.notification = descriptor;
                     }
                 }
