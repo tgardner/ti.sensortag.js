@@ -10,7 +10,7 @@ var Constants = require('./Constants');
 var SensorTag = function (device) {
     this.device = device;
     this.services = [];
-
+    
     this.Accelerometer = new SensorTag.Accelerometer(this);
     this.BarometricPressure = new SensorTag.BarometricPressure(this);
     this.Gyroscope = new SensorTag.Gyroscope(this);
@@ -26,7 +26,7 @@ SensorTag.Gyroscope = require('./Sensors/Gyroscope');
 SensorTag.Humidity = require('./Sensors/Humidity');
 SensorTag.IRTemperature = require('./Sensors/Humidity');
 SensorTag.Magnetometer = require('./Sensors/Magnetometer');
-SensorTag.SimplyKey = require('./Sensors/SimpleKey');
+SensorTag.SimpleKey = require('./Sensors/SimpleKey');
 
 /**
 * Logs a message on behalf of the SensorTag
