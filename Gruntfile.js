@@ -13,7 +13,7 @@ module.exports = function(grunt) {
           src: [ 'src/SensorTag.js' ],
           dest: 'build/<%= pkg.name %>.js',
           options: {
-              alias: ["src/SensorTag.js:SensorTag"],
+              alias: ["src/SensorTag.js:<%= pkg.name %>"],
               bundleOptions: {
                   "require": true,
                   "detectGlobals": false
