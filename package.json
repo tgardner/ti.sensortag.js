@@ -1,16 +1,45 @@
 {
-  "name": "ti-sensortag",
-  "version": "0.1.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tgardner/ti.sensortag.js.git"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-contrib-jshint": "~0.8.0",
-    "grunt-jsdoc": "~0.5.1",
-    "grunt-contrib-uglify": "~0.3.2",
-    "grunt-browserify": "~2.0.1"
-  }
+    "name": "ti-sensortag",
+    "description": "An implementation for the TI CC2541 SensorTag",
+    "version": "0.1.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tgardner/ti.sensortag.js.git"
+    },
+    "author": { 
+        "name": "Trent Gardner",
+        "email": "trent.gardner@gmail.com",
+        "url": "http://trentgardner.net/"
+    },
+    "keywords": [
+        "bluetooth",
+        "BLE",
+        "bluetooth low energy",
+        "sensor",
+        "tag",
+        "sensortag",
+        "ti",
+        "texas instruments"
+    ],
+    "os": [
+        "darwin",
+        "linux",
+        "android",
+        "ios"
+    ],
+    "main": "./src/SensorTag.js",
+    "bugs": {
+        "url": "https://github.com/tgardner/ti.sensortag.js/issues"
+    },
+    "dependencies": {
+        "noble": "~0.3.0"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.2",
+        "grunt-contrib-watch": "~0.5.3",
+        "grunt-contrib-jshint": "~0.8.0",
+        "grunt-jsdoc": "~0.5.1",
+        "grunt-contrib-uglify": "~0.3.2",
+        "grunt-browserify": "~2.0.1"
+    }
 }

@@ -59,6 +59,5 @@ noble.on('discover', function(peripheral) {
 		        console.log(error);
 		    }
 		});
-		//explore(peripheral);
 	}
 });
