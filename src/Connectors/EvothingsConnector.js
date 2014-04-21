@@ -85,7 +85,7 @@ EvothingsConnector.prototype.close = function() {
 };
 
 EvothingsConnector.prototype.toString = function() {
-    return this.peripheral.handle;
+    return this.peripheral;
 };
 
 module.exports = EvothingsConnector;

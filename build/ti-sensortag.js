@@ -94,7 +94,7 @@ EvothingsConnector.prototype.close = function() {
 };
 
 EvothingsConnector.prototype.toString = function() {
-    return this.peripheral.handle;
+    return this.peripheral;
 };
 
 module.exports = EvothingsConnector;
@@ -463,8 +463,8 @@ SensorBase.prototype.onDataNotify = function () {
 module.exports = SensorBase;
 
 },{"./Constants.js":4}],"SensorTag":[function(require,module,exports){
-module.exports=require('WErVy4');
-},{}],"WErVy4":[function(require,module,exports){
+module.exports=require('T6zdoz');
+},{}],"T6zdoz":[function(require,module,exports){
 
 var Constants = require('./Constants'),
     Connector = require('./Connectors/Connector');
@@ -1046,4 +1046,4 @@ delete SimpleKey.prototype.disable;
 
 module.exports = SimpleKey;
 
-},{"../Constants":4,"../SensorBase":5}]},{},["WErVy4"]);
+},{"../Constants":4,"../SensorBase":5}]},{},["T6zdoz"])
