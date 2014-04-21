@@ -10,9 +10,15 @@ module.exports = function(grunt) {
     },
     browserify: {
       dist: {
-        files: {
-          'build/<%= pkg.name %>.js': ['src/SensorTag.js'],
-        }
+          src: [ 'src/SensorTag.js' ],
+          dest: 'build/<%= pkg.name %>.js',
+          options: {
+              alias: ["src/SensorTag.js:SensorTag"],
+              bundleOptions: {
+                  "require": true,
+                  "detectGlobals": false
+              }
+          }
       }
     },
     uglify: {
