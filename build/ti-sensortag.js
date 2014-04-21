@@ -1328,6 +1328,99 @@ function Connector(peripheral) {
 module.exports = Connector;
 
 },{}],5:[function(require,module,exports){
+var Connector = require('./Connector');
+
+var EvothingsConnector = function (peripheral, ble) {
+    Connector.call(this, peripheral);
+    
+    this.ble = ble;
+};
+
+EvothingsConnector.prototype = new Connector();
+EvothingsConnector.prototype.constructor = EvothingsConnector;
+
+EvothingsConnector.prototype.services = function(win, fail) {
+    this.ble.services(
+        this.peripheral,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.characteristics = function(service, win, fail) {
+    this.ble.characteristics(
+        this.peripheral,
+        service.handle,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.descriptors = function(characteristic, win, fail) {
+    this.ble.descriptors(
+        this.peripheral,
+        characteristic.handle,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.writeCharacteristic = function(characteristic, data, win, fail) {
+    this.ble.writeCharacteristic(
+        this.peripheral,
+        characteristic.handle,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.readCharacteristic = function(characteristic, win, fail) {
+    this.ble.readCharacteristic(
+        this.peripheral,
+        characteristic.handle,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.writeDescriptor = function(descriptor, data, win, fail) {
+    this.ble.writeDescriptor(
+        this.peripheral,
+        descriptor.handle,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.enableNotification = function(characteristic, win, fail) {
+    this.ble.enableNotification(
+        this.peripheral,
+        characteristic.handle,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.disableNotification = function(characteristic, win, fail) {
+    this.ble.disableNotification(
+        this.peripheral,
+        characteristic.handle,
+        win,
+        fail
+    );
+};
+
+EvothingsConnector.prototype.close = function() {
+    this.ble.close(this.peripheral);
+};
+
+EvothingsConnector.prototype.toString = function() {
+    return this.peripheral.handle;
+};
+
+module.exports = EvothingsConnector;
+
+},{"./Connector":4}],6:[function(require,module,exports){
 (function (Buffer){
 var Connector = require('./Connector');
 
@@ -1339,9 +1432,7 @@ NobleConnector.prototype = new Connector();
 NobleConnector.prototype.constructor = NobleConnector;
 
 NobleConnector.prototype.services = function(win, fail) {
-    var self = this;
-    
-    self.peripheral.discoverServices(
+    this.peripheral.discoverServices(
         [], 
         function(error, services) {
             if(error) {
@@ -1443,50 +1534,50 @@ NobleConnector.prototype.toString = function() {
 module.exports = NobleConnector;
 
 }).call(this,require("buffer").Buffer)
-},{"./Connector":4,"buffer":1}],6:[function(require,module,exports){
+},{"./Connector":4,"buffer":1}],7:[function(require,module,exports){
 
 module.exports = {
-	GATT_CLIENT_CHAR_CFG_UUID: '00002902-0000-1000-8000-00805f9b34fb',
+    GATT_CLIENT_CHAR_CFG_UUID: /^(0000)?2902(-0000-1000-8000-00805f9b34fb)?$/,
 
-	ACCELEROMETER_UUID_SERVICE: "f000aa10-0451-4000-b000-000000000000",
-	ACCELEROMETER_UUID_DATA: "f000aa11-0451-4000-b000-000000000000",
-	ACCELEROMETER_UUID_CONF: "f000aa12-0451-4000-b000-000000000000",
-	ACCELEROMETER_UUID_PERIOD: "f000aa13-0451-4000-b000-000000000000",
-	
-	BAROMETRICPRESSURE_UUID_SERVICE: "f000aa40-0451-4000-b000-000000000000",
-	BAROMETRICPRESSURE_UUID_DATA: "f000aa41-0451-4000-b000-000000000000",
-	BAROMETRICPRESSURE_UUID_CONF: "f000aa42-0451-4000-b000-000000000000",
-	BAROMETRICPRESSURE_UUID_PERIOD: "f000aa44-0451-4000-b000-000000000000",
-	BAROMETRICPRESSURE_UUID_CALIBRATION: "f000aa43-0451-4000-b000-000000000000",
-	
-	GYROSCOPE_UUID_SERVICE: "f000aa50-0451-4000-b000-000000000000",
-	GYROSCOPE_UUID_DATA: "f000aa51-0451-4000-b000-000000000000",
-	GYROSCOPE_UUID_CONF: "f000aa52-0451-4000-b000-000000000000",
-	GYROSCOPE_UUID_PERIOD: "f000aa53-0451-4000-b000-000000000000",
-	
-	HUMIDITY_UUID_SERVICE: "f000aa20-0451-4000-b000-000000000000",
-	HUMIDITY_UUID_DATA: "f000aa21-0451-4000-b000-000000000000",
+    ACCELEROMETER_UUID_SERVICE: "f000aa10-0451-4000-b000-000000000000",
+    ACCELEROMETER_UUID_DATA: /^f000aa11-0451-4000-b000-000000000000$/,
+    ACCELEROMETER_UUID_CONF: "f000aa12-0451-4000-b000-000000000000",
+    ACCELEROMETER_UUID_PERIOD: "f000aa13-0451-4000-b000-000000000000",
+    
+    BAROMETRICPRESSURE_UUID_SERVICE: "f000aa40-0451-4000-b000-000000000000",
+    BAROMETRICPRESSURE_UUID_DATA: /^f000aa41-0451-4000-b000-000000000000$/,
+    BAROMETRICPRESSURE_UUID_CONF: "f000aa42-0451-4000-b000-000000000000",
+    BAROMETRICPRESSURE_UUID_PERIOD: "f000aa44-0451-4000-b000-000000000000",
+    BAROMETRICPRESSURE_UUID_CALIBRATION: /^f000aa43-0451-4000-b000-000000000000$/,
+    
+    GYROSCOPE_UUID_SERVICE: "f000aa50-0451-4000-b000-000000000000",
+    GYROSCOPE_UUID_DATA: /^f000aa51-0451-4000-b000-000000000000$/,
+    GYROSCOPE_UUID_CONF: "f000aa52-0451-4000-b000-000000000000",
+    GYROSCOPE_UUID_PERIOD: "f000aa53-0451-4000-b000-000000000000",
+    
+    HUMIDITY_UUID_SERVICE: "f000aa20-0451-4000-b000-000000000000",
+    HUMIDITY_UUID_DATA: /^f000aa21-0451-4000-b000-000000000000$/,
     HUMIDITY_UUID_CONF: "f000aa22-0451-4000-b000-000000000000",
     HUMIDITY_UUID_PERIOD: "f000aa23-0451-4000-b000-000000000000",
     
     IRTEMPERATURE_UUID_SERVICE: "f000aa00-0451-4000-b000-000000000000",
-    IRTEMPERATURE_UUID_DATA: "f000aa01-0451-4000-b000-000000000000",
+    IRTEMPERATURE_UUID_DATA: /^f000aa01-0451-4000-b000-000000000000$/,
     IRTEMPERATURE_UUID_CONF: "f000aa02-0451-4000-b000-000000000000",
     IRTEMPERATURE_UUID_PERIOD: "f000aa03-0451-4000-b000-000000000000",
     
     MAGNETOMETER_UUID_SERVICE: "f000aa30-0451-4000-b000-000000000000",
-    MAGNETOMETER_UUID_DATA: "f000aa31-0451-4000-b000-000000000000",
+    MAGNETOMETER_UUID_DATA: /^f000aa31-0451-4000-b000-000000000000$/,
     MAGNETOMETER_UUID_CONF: "f000aa32-0451-4000-b000-000000000000",
     MAGNETOMETER_UUID_PERIOD: "f000aa33-0451-4000-b000-000000000000",
     
-    SIMPLEKEY_UUID_SERVICE: "0000ffe0-0000-1000-8000-00805f9b34fb",
-    SIMPLEKEY_UUID_DATA: "0000ffe1-0000-1000-8000-00805f9b34fb",
+    SIMPLEKEY_UUID_SERVICE: /^(0000)?ffe0(-0000-1000-8000-00805f9b34fb)?$/,
+    SIMPLEKEY_UUID_DATA: /^(0000)?ffe1(-0000-1000-8000-00805f9b34fb)?$/,
     
-    GUID_PATTERN: /([a-f0-9]{8})-?([a-f0-9]{4})-?([a-f0-9]{4})-?([a-f0-9]{4})-?([a-f0-9]{12})/g,
+    GUID_PATTERN: /([a-f0-9]{8})-?([a-f0-9]{4})-?([a-f0-9]{4})-?([a-f0-9]{4})-?([a-f0-9]{12})/,
     GUID_REPLACEMENT: '$1-$2-$3-$4-$5'
 };
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var Constants = require('./Constants.js');
 
 /**
@@ -1536,18 +1627,19 @@ SensorBase.prototype.init = function (service) {
             case this.UUID_PERIOD:
                 this.characteristics.period = characteristic;
                 break;
-            case this.UUID_DATA:
-                this.characteristics.data = characteristic;
+        }
+        
+        if(this.UUID_DATA.test(cGuid)) {
+            this.characteristics.data = characteristic;
 
-                for (var di in characteristic.descriptors) {
-                    var descriptor = characteristic.descriptors[di],
-                        dGuid = descriptor.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
-                    
-                    if (dGuid == Constants.GATT_CLIENT_CHAR_CFG_UUID || dGuid==2902) {
-                        this.descriptors.notification = descriptor;
-                    }
+            for (var di in characteristic.descriptors) {
+                var descriptor = characteristic.descriptors[di],
+                    dGuid = descriptor.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
+                
+                if (Constants.GATT_CLIENT_CHAR_CFG_UUID.test(dGuid)) {
+                    this.descriptors.notification = descriptor;
                 }
-                break;
+            }
         }
     }
     
@@ -1693,7 +1785,7 @@ SensorBase.prototype.onDataNotify = function () {
 
 module.exports = SensorBase;
 
-},{"./Constants.js":6}],8:[function(require,module,exports){
+},{"./Constants.js":7}],9:[function(require,module,exports){
 
 var Constants = require('./Constants'),
     Connector = require('./Connectors/Connector');
@@ -1701,7 +1793,7 @@ var Constants = require('./Constants'),
 /**
 * A class representing the TI SensorTag
 * @constructor
-* @param {handle} device The device handle from the 
+* @param {Connector} device The device handle from the 
 * connection object
 */
 var SensorTag = function (device) {
@@ -1732,6 +1824,7 @@ SensorTag.SimpleKey = require('./Sensors/SimpleKey');
 
 // Connectors
 SensorTag.NobleConnector = require('./Connectors/NobleConnector');
+SensorTag.EvothingsConnector = require('./Connectors/EvothingsConnector');
 
 /**
 * Logs a message on behalf of the SensorTag
@@ -1775,10 +1868,10 @@ SensorTag.prototype.init = function () {
             case Constants.MAGNETOMETER_UUID_SERVICE:
                 self.Magnetometer.init(service);
                 break;
-
-            case Constants.SIMPLEKEY_UUID_SERVICE:
-                self.SimpleKey.init(service);
-                break;
+        }
+        
+        if(Constants.SIMPLEKEY_UUID_SERVICE.test(guid)) {
+            self.SimpleKey.init(service);
         }
     }
     
@@ -1919,7 +2012,7 @@ SensorTag.prototype.close = function () {
 
 module.exports = SensorTag;
 
-},{"./Connectors/Connector":4,"./Connectors/NobleConnector":5,"./Constants":6,"./Sensors/Accelerometer":9,"./Sensors/BarometricPressure":10,"./Sensors/Gyroscope":11,"./Sensors/Humidity":12,"./Sensors/Magnetometer":13,"./Sensors/SimpleKey":14}],9:[function(require,module,exports){
+},{"./Connectors/Connector":4,"./Connectors/EvothingsConnector":5,"./Connectors/NobleConnector":6,"./Constants":7,"./Sensors/Accelerometer":10,"./Sensors/BarometricPressure":11,"./Sensors/Gyroscope":12,"./Sensors/Humidity":13,"./Sensors/Magnetometer":14,"./Sensors/SimpleKey":15}],10:[function(require,module,exports){
 
 var Constants = require('../Constants'),
     SensorBase = require('../SensorBase');
@@ -1988,7 +2081,7 @@ Accelerometer.prototype.calculateAcceleration = function (data, scale) {
 
 module.exports = Accelerometer;
 
-},{"../Constants":6,"../SensorBase":7}],10:[function(require,module,exports){
+},{"../Constants":7,"../SensorBase":8}],11:[function(require,module,exports){
 
 var Constants = require('../Constants'),
     SensorBase = require('../SensorBase');
@@ -2017,10 +2110,8 @@ BarometricPressure.prototype.init = function (service) {
         var characteristic = service.characteristics[ci],
             cGuid = characteristic.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
         
-        switch (cGuid) {
-            case Constants.BAROMETRICPRESSURE_UUID_CALIBRATION:
-                this.characteristics.calibration = characteristic;
-                break;
+        if(Constants.BAROMETRICPRESSURE_UUID_CALIBRATION.test(cGuid)) {
+            this.characteristics.calibration = characteristic;
         }
     }
 
@@ -2091,7 +2182,7 @@ BarometricPressure.prototype.calculatePressure = function (data) {
 
 module.exports = BarometricPressure;
 
-},{"../Constants":6,"../SensorBase":7}],11:[function(require,module,exports){
+},{"../Constants":7,"../SensorBase":8}],12:[function(require,module,exports){
 
 var Constants = require('../Constants'),
     SensorBase = require('../SensorBase');
@@ -2156,7 +2247,7 @@ Gyroscope.prototype.calculateAxisValue = function (data) {
 
 module.exports = Gyroscope;
 
-},{"../Constants":6,"../SensorBase":7}],12:[function(require,module,exports){
+},{"../Constants":7,"../SensorBase":8}],13:[function(require,module,exports){
 
 var Constants = require('../Constants'),
     SensorBase = require('../SensorBase');
@@ -2196,7 +2287,7 @@ Humidity.prototype.calculateHumidity = function (data) {
 
 module.exports = Humidity;
 
-},{"../Constants":6,"../SensorBase":7}],13:[function(require,module,exports){
+},{"../Constants":7,"../SensorBase":8}],14:[function(require,module,exports){
 
 var Constants = require('../Constants'),
     SensorBase = require('../SensorBase'),
@@ -2245,7 +2336,7 @@ Magnetometer.prototype.calculateCoordinates = function (data) {
 
 module.exports = Magnetometer;
 
-},{"../Constants":6,"../SensorBase":7,"./Accelerometer":9}],14:[function(require,module,exports){
+},{"../Constants":7,"../SensorBase":8,"./Accelerometer":10}],15:[function(require,module,exports){
 
 var Constants = require('../Constants'),
     SensorBase = require('../SensorBase');
@@ -2257,6 +2348,7 @@ var Constants = require('../Constants'),
 var SimpleKey = function (sensorTag) {
     SensorBase.call(this, 
         "SimpleKey", 
+        sensorTag,
         Constants.SIMPLEKEY_UUID_DATA);
 };
 
@@ -2275,4 +2367,4 @@ delete SimpleKey.prototype.disable;
 
 module.exports = SimpleKey;
 
-},{"../Constants":6,"../SensorBase":7}]},{},[8]);
+},{"../Constants":7,"../SensorBase":8}]},{},[9]);

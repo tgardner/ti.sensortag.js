@@ -47,18 +47,19 @@ SensorBase.prototype.init = function (service) {
             case this.UUID_PERIOD:
                 this.characteristics.period = characteristic;
                 break;
-            case this.UUID_DATA:
-                this.characteristics.data = characteristic;
+        }
+        
+        if(this.UUID_DATA.test(cGuid)) {
+            this.characteristics.data = characteristic;
 
-                for (var di in characteristic.descriptors) {
-                    var descriptor = characteristic.descriptors[di],
-                        dGuid = descriptor.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
-                    
-                    if (Constants.GATT_CLIENT_CHAR_CFG_UUID.test(dGuid)) {
-                        this.descriptors.notification = descriptor;
-                    }
+            for (var di in characteristic.descriptors) {
+                var descriptor = characteristic.descriptors[di],
+                    dGuid = descriptor.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
+                
+                if (Constants.GATT_CLIENT_CHAR_CFG_UUID.test(dGuid)) {
+                    this.descriptors.notification = descriptor;
                 }
-                break;
+            }
         }
     }
     

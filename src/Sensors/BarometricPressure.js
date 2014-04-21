@@ -26,10 +26,8 @@ BarometricPressure.prototype.init = function (service) {
         var characteristic = service.characteristics[ci],
             cGuid = characteristic.uuid.replace(Constants.GUID_PATTERN, Constants.GUID_REPLACEMENT);
         
-        switch (cGuid) {
-            case Constants.BAROMETRICPRESSURE_UUID_CALIBRATION:
-                this.characteristics.calibration = characteristic;
-                break;
+        if(Constants.BAROMETRICPRESSURE_UUID_CALIBRATION.test(cGuid)) {
+            this.characteristics.calibration = characteristic;
         }
     }
 
