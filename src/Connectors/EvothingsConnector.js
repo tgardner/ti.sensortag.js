@@ -57,6 +57,7 @@ EvothingsConnector.prototype.writeDescriptor = function(descriptor, data, win, f
     this.ble.writeDescriptor(
         this.peripheral,
         descriptor.handle,
+        data,
         win,
         fail
     );
