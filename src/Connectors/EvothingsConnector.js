@@ -39,6 +39,7 @@ EvothingsConnector.prototype.writeCharacteristic = function(characteristic, data
     this.ble.writeCharacteristic(
         this.peripheral,
         characteristic.handle,
+        data,
         win,
         fail
     );
